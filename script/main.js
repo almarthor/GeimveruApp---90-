@@ -35,7 +35,8 @@ function GameBasics(canvas) {
 
   this.setting = {
     
-    updateSeconds: 1 / 60
+    updateSeconds: 1 / 60,
+    spaceshipSpeed: 500,
   };
 
   
