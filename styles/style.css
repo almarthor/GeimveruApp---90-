@@ -1,0 +1,14 @@
+#ufoCanvas{
+    border: 1px solid black;
+
+    margin: 0 auto;
+    display: block;
+
+    background-image: url("../images/1.webp");
+    background-size: 100%, 100%;
+}
+
+body {
+    background-image: url("../images/space-background-spaceship-arcade-game-090062351_prevstill.webp");
+    background-repeat: repeat;
+}
