@@ -4,7 +4,7 @@ function OpeningPosition(){
 }
 
 OpeningPosition.prototype.draw = function(play){
-//ufoHunter
+
 ctx.clearRect(0,0, play.width, play.height);
 ctx.font="80px Areal";
 ctx.textAlign="center";
@@ -15,12 +15,12 @@ gradient.addColorStop("1.0","white");
 ctx.fillStyle = gradient;
 ctx.fillText("ANTON´s INNRÁS", play.width / 2, play.height/2 - 70);
 
-//press to start
+
 ctx.font="40px Areal";
 ctx.fillStyle = 'white';
 ctx.fillText("Ýttu á 'Space' til að byrja.", play.width /2,play.height/2);
 
-//game controls
+
 ctx.fillStyle = 'white';
 ctx.fillText("BJARGAÐU HEIMINUM FRÁ ANTONI", play.width/2, play.height/2 + 210);
 ctx.fillText("Vinstri : Ferðu til vinstri", play.width/2, play.height/2 + 260);
