@@ -65,7 +65,7 @@ function InGamePosition(setting, level ){
     this.spaceship_image = new Image();
     this.object = new Objects();
     this.spaceship = this.object.spaceship((play.width / 2), play.playBoundaries.bottom, this.spaceship_image);
-  
+
     //creating UFOS
     const lines = this.setting.ufoLines;
     const columns = this.setting.ufoColumns;
@@ -73,7 +73,8 @@ function InGamePosition(setting, level ){
   
     let line, column;
   for (line = 0; line < lines; line++) {
-    for (line = 0; column < columns; column++) {
+  for (column = 0; column < columns; column++) {
+ 
       this.object = new Objects();
       let x, y;
       x = (play.width / 2);
@@ -89,7 +90,7 @@ function InGamePosition(setting, level ){
       }
     
     }
-    this.ufosInitial;
+    this.ufos = ufosInitial;
   
   };
   
@@ -106,7 +107,7 @@ function InGamePosition(setting, level ){
     ctx.fillStyle = '#ff0000';
     for (let i = 0; i < this.bullets.length; i++) {
       let bullet = this.bullets[i];
-      ctx.fillRect(bullet.x-1, bullet.y-6, 2, 6);
+      ctx.fillRect(bullet.x-1, bullet.y -4 , 2, 6);
     }
   
     //enemies
