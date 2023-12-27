@@ -48,6 +48,29 @@ function InGamePosition(setting, level ){
         bullets.splice(i--, 1);
       }
     }
+
+    let reachedRight = false;
+    let reachedLeft = false;
+
+    for (let i = 0; i < this.ufos.length; i++){
+      let ufo = this.ufos[i];
+      let fresh_x = ufo.x + this.ufoSpeed * upSec * this.turnAround;
+      
+      if(fresh_x > play.playBoundaries.right){
+        this.turnAround *= -1;
+        reachedRight = true;
+      }
+
+      if(fresh_x < play.playBoundaries.left){
+        this.turnAround *= -1;
+        reachedLeft = true;
+      }
+
+      if(!reachedRight == true && !reachedLeft == true){
+        ufo.x = fresh_x;
+      }
+    }
+
   };
   
   InGamePosition.prototype.shoot = function() {
@@ -59,12 +82,18 @@ function InGamePosition(setting, level ){
   };
   
   InGamePosition.prototype.entry = function(play){
+    this.turnAround = 1;
     this.upSec = this.setting.updateSeconds;
     this.spaceshipSpeed = this.setting.spaceshipSpeed;
     this.ufo_image = new Image();
     this.spaceship_image = new Image();
     this.object = new Objects();
     this.spaceship = this.object.spaceship((play.width / 2), play.playBoundaries.bottom, this.spaceship_image);
+    //
+    let presentLevel = this.level;
+    //
+    this.ufoSpeed = this.setting.ufoSpeed + (presentLevel * 7);
+
 
     //creating UFOS
     const lines = this.setting.ufoLines;
@@ -77,8 +106,8 @@ function InGamePosition(setting, level ){
  
       this.object = new Objects();
       let x, y;
-      x = (play.width / 2);
-      y = (play.playBoundaries.top + 30);
+      x = (play.width / 2) + (column * 70) - ((columns - 1) * 35);
+      y = (play.playBoundaries.top + 10) + (line * 50);
       ufosInitial.push(this.object.ufo(
         x,
         y,
