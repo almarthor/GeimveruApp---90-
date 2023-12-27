@@ -27,9 +27,15 @@ Objects.prototype.ufo = function(x, y, line, column, ufo_image) {
   this.y = y;
   this.line = line;
   this.column = column;
-  this.width = 30;
-  this.height = 64;
+  this.width = 44;
+  this.height = 44;
   this.ufo_image = ufo_image;
   this.ufo_image.src = "images/Untitled.png";
+  return this;
+};
+
+Objects.prototype.bomb = function(x, y) {
+  this.x = x;
+  this.y = y;
   return this;
 };

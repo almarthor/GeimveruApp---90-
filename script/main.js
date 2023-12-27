@@ -22,7 +22,7 @@ function GameBasics(canvas) {
 
   // active playing field
   this.playBoundaries = {
-    top: 150,
+    top: 75,
     bottom: 650,
     left: 100,
     right: 800
@@ -43,6 +43,10 @@ function GameBasics(canvas) {
     ufoLines: 4, //ufo lines
     ufoColumns: 8, //ufo number
     ufoSpeed: 35, //ufo speed
+    ufoSinkingValue: 30,
+
+    bombSpeed: 75,
+    bombFrequency: 0.05,
   };
 
   // we collect here the different positions, states of the game
