@@ -133,6 +133,32 @@ InGamePosition.prototype.update = function(play,){
       this.ufos.splice(i--, 1);
     }
   }
+  //spaceship-bomb collision
+  for( let i = 0; i < this.bombs.length; i++){
+    let bomb = this.bombs[i];
+    if(bomb.x + 2 >= (spaceship.x - spaceship.width / 4)&&
+      bomb.x - 2 <= (spaceship.x + spaceship.width / 4) &&
+      bomb.y + 6 >= (spaceship.y - spaceship.height / 3)&&
+      bomb.y <= (spaceship.y + spaceship.height / 3)){
+        //collision deletes bomb
+        this.bombs.splice(i--, 1);
+        //spaceship hit
+        play.goToPosition(new OpeningPosition());
+      }
+  }
+  //spaceship ufo hit
+  for( let i = 0; i < this.ufos.length; i++){
+    let ufo = this.ufos[i];
+    if((ufo.x + ufo.width) > (spaceship.x - spaceship.width / 4)&&
+      (ufo.x - ufo.width) < (spaceship.x + spaceship.width / 4) &&
+      (ufo.y + ufo.height) > (spaceship.y - spaceship.height / 3)&&
+      (ufo.y - ufo.height) < (spaceship.y + spaceship.height / 3)){
+      
+        //spaceship hit
+        play.goToPosition(new OpeningPosition());
+      }
+  }  
+  
 };
 
 InGamePosition.prototype.shoot = function() {

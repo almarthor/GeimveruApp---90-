@@ -143,4 +143,6 @@ window.addEventListener("keyup", function (e) {
 });
 
 const play = new GameBasics(canvas);
+play.sounds = new Sounds()
+play.sounds.init();
 play.start();
