@@ -1,4 +1,4 @@
-function InGamePosition(setting, level ){
+function InGamePosition(setting, level) {
 
   this.setting = setting;
   this.level = level;
@@ -11,7 +11,7 @@ function InGamePosition(setting, level ){
 
 }
 
-InGamePosition.prototype.update = function(play,){
+InGamePosition.prototype.update = function (play,) {
 
   const spaceship = this.spaceship;
   const spaceshipSpeed = this.spaceshipSpeed;
@@ -28,15 +28,15 @@ InGamePosition.prototype.update = function(play,){
   }
 
   // if user fires: hits spaceship
-  if(play.pressedKeys[" "]) {
+  if (play.pressedKeys[" "]) {
     this.shoot();
   }
 
-  if(spaceship.x < play.playBoundaries.left) {
+  if (spaceship.x < play.playBoundaries.left) {
     spaceship.x = play.playBoundaries.left;
   }
 
-  if(spaceship.x > play.playBoundaries.right) {
+  if (spaceship.x > play.playBoundaries.right) {
     spaceship.x = play.playBoundaries.right;
   }
 
@@ -54,12 +54,12 @@ InGamePosition.prototype.update = function(play,){
   let reachedSide = false;
 
 
-  for (let i = 0; i < this.ufos.length; i++){
+  for (let i = 0; i < this.ufos.length; i++) {
     let ufo = this.ufos[i];
     let fresh_x = ufo.x + this.ufoSpeed * upSec * this.turnAround * this.horizontalMoving;
     let fresh_y = ufo.y + this.ufoSpeed * upSec * this.verticalMoving;
 
-    if(fresh_x > play.playBoundaries.right || fresh_x < play.playBoundaries.left){
+    if (fresh_x > play.playBoundaries.right || fresh_x < play.playBoundaries.left) {
       this.turnAround *= -1;
       reachedSide = true;
       this.horizontalMoving = 0;
@@ -67,7 +67,7 @@ InGamePosition.prototype.update = function(play,){
       this.ufosAreSinking = true;
     }
 
-    if(reachedSide !== true){
+    if (reachedSide !== true) {
       ufo.x = fresh_x;
       ufo.y = fresh_y;
     }
@@ -76,10 +76,10 @@ InGamePosition.prototype.update = function(play,){
   if (this.ufosAreSinking == true) {
     this.ufoPresentSinkingValue += this.ufoSpeed * upSec;
     if (this.ufoPresentSinkingValue >= this.setting.ufoSinkingValue) {
-    this.ufosAreSinking = false;
-    this.verticalMoving = 0;
-    this.horizontalMoving = 1;
-    this.ufoPresentSinkingValue = 0;
+      this.ufosAreSinking = false;
+      this.verticalMoving = 0;
+      this.horizontalMoving = 1;
+      this.ufoPresentSinkingValue = 0;
     }
   }
 
@@ -94,12 +94,12 @@ InGamePosition.prototype.update = function(play,){
   }
 
   //give a chance for bombing
-  for(let i = 0; i < this.setting.ufoColumns; i++) {
+  for (let i = 0; i < this.setting.ufoColumns; i++) {
     let ufo = frontLineUFOs[i];
     if (!ufo) continue;
     let chance = this.bombFrequency * upSec;
     this.object = new Objects();
-    if ( chance > Math.random()) {
+    if (chance > Math.random()) {
       //make a bom object and put it into bombs array
       this.bombs.push(this.object.bomb(ufo.x, ufo.y + ufo.height / 2));
     }
@@ -116,60 +116,73 @@ InGamePosition.prototype.update = function(play,){
   }
 
   // ufo-bullet colission
-  for (let i = 0; i < this.ufos.length; i++){
+  for (let i = 0; i < this.ufos.length; i++) {
     let ufo = this.ufos[i];
     let collision = false;
-    for ( let j = 0; j < bullets.length; j++){
+    for (let j = 0; j < bullets.length; j++) {
       let bullet = bullets[j];
       //collision check
-      if(bullet.x >= (ufo.x - ufo.width / 2) && bullet.x <= (ufo.x + ufo.width / 2) &&
-        bullet.y >= (ufo.y - ufo.height / 2) && bullet.y <= (ufo.y + ufo.height / 2 )){
+      if (bullet.x >= (ufo.x - ufo.width / 2) && bullet.x <= (ufo.x + ufo.width / 2) &&
+        bullet.y >= (ufo.y - ufo.height / 2) && bullet.y <= (ufo.y + ufo.height / 2)) {
         bullets.splice(j--, 1);
         collision = true;
+        play.score += this.setting.pointsPerUFO;
       }
     }
     // if there is collision we delete ufo
-    if(collision == true){
+    if (collision == true) {
       this.ufos.splice(i--, 1);
+      play.sounds.playSound('ufoDeath');
     }
   }
   //spaceship-bomb collision
-  for( let i = 0; i < this.bombs.length; i++){
+  for (let i = 0; i < this.bombs.length; i++) {
     let bomb = this.bombs[i];
-    if(bomb.x + 2 >= (spaceship.x - spaceship.width / 4)&&
+    if (bomb.x + 2 >= (spaceship.x - spaceship.width / 4) &&
       bomb.x - 2 <= (spaceship.x + spaceship.width / 4) &&
-      bomb.y + 6 >= (spaceship.y - spaceship.height / 3)&&
-      bomb.y <= (spaceship.y + spaceship.height / 3)){
-        //collision deletes bomb
-        this.bombs.splice(i--, 1);
-        //spaceship hit
-        play.goToPosition(new OpeningPosition());
-      }
+      bomb.y + 6 >= (spaceship.y - spaceship.height / 3) &&
+      bomb.y <= (spaceship.y + spaceship.height / 3)) {
+      //collision deletes bomb
+      this.bombs.splice(i--, 1);
+      //spaceship hit
+      play.sounds.playSound('explosion');
+      play.shields--;
+    }
   }
   //spaceship ufo hit
-  for( let i = 0; i < this.ufos.length; i++){
+  for (let i = 0; i < this.ufos.length; i++) {
     let ufo = this.ufos[i];
-    if((ufo.x + ufo.width) > (spaceship.x - spaceship.width / 4)&&
+    if ((ufo.x + ufo.width) > (spaceship.x - spaceship.width / 4) &&
       (ufo.x - ufo.width) < (spaceship.x + spaceship.width / 4) &&
-      (ufo.y + ufo.height) > (spaceship.y - spaceship.height / 3)&&
-      (ufo.y - ufo.height) < (spaceship.y + spaceship.height / 3)){
-      
-        //spaceship hit
-        play.goToPosition(new OpeningPosition());
-      }
-  }  
-  
+      (ufo.y + ufo.height) > (spaceship.y - spaceship.height / 3) &&
+      (ufo.y - ufo.height) < (spaceship.y + spaceship.height / 3)) {
+
+      //spaceship hit
+      play.sounds.playSound('explosion');
+      play.shields = -1;
+    }
+  }
+
+  if (play.shields < 0) {
+    play.goToPosition(new OpeningPosition());
+  }
+  if (this.ufos.length == 0) {
+    play.level += 1;
+    play.goToPosition(new TransferPosition(play.level));
+  }
+
 };
 
-InGamePosition.prototype.shoot = function() {
+InGamePosition.prototype.shoot = function () {
   if (this.lastBulletTime === null || ((new Date()).getTime() - this.lastBulletTime) > (this.setting.bulletMaxFrequency)) {
-this.object = new Objects();
-this.bullets.push(this.object.bullet(this.spaceship.x, this.spaceship.y - this.spaceship.height / 2, this.setting.bulletSpeed));
-this.lastBulletTime = (new Date()).getTime();
+    this.object = new Objects();
+    this.bullets.push(this.object.bullet(this.spaceship.x, this.spaceship.y - this.spaceship.height / 2, this.setting.bulletSpeed));
+    this.lastBulletTime = (new Date()).getTime();
+    play.sounds.playSound('shot');
   }
 };
 
-InGamePosition.prototype.entry = function(play){
+InGamePosition.prototype.entry = function (play) {
   this.horizontalMoving = 1;
   this.verticalMoving = 0;
   this.ufosAreSinking = false;
@@ -184,49 +197,55 @@ InGamePosition.prototype.entry = function(play){
 
   // Values that change with levels (1. UFO speed, 2. Bomb falling speed, 4 Bomb dropping frequency)
   let presentLevel = this.level;
-// 1. UFO speed
+  // 1. UFO speed
   this.ufoSpeed = this.setting.ufoSpeed + (presentLevel * 7);
-//  2.bomb falling speed
-this.bombSpeed = this.setting.bombSpeed + (presentLevel * 10);
-//  3.bomb dropping freq
-this.bombFrequency = this.setting.bombFrequency + (presentLevel * 0.05);
+  //  2.bomb falling speed
+  this.bombSpeed = this.setting.bombSpeed + (presentLevel * 10);
+  //  3.bomb dropping freq
+  this.bombFrequency = this.setting.bombFrequency + (presentLevel * 0.05);
 
 
-//creating UFOS
+  //creating UFOS
   const lines = this.setting.ufoLines;
   const columns = this.setting.ufoColumns;
   const ufosInitial = [];
 
   let line, column;
-for (line = 0; line < lines; line++) {
-for (column = 0; column < columns; column++) {
+  for (line = 0; line < lines; line++) {
+    for (column = 0; column < columns; column++) {
 
-    this.object = new Objects();
-    let x, y;
-    x = (play.width / 2) + (column * 70) - ((columns - 1) * 35);
-    y = (play.playBoundaries.top) + (line * 55);
-    ufosInitial.push(this.object.ufo(
-      x,
-      y,
-      line,
-      column,
-      this.ufo_image
-    ));
-    console.log('line: ' + line + ' column: ' + column + ' x:' + x + ' y:' + y);
+      this.object = new Objects();
+      let x, y;
+      x = (play.width / 2) + (column * 70) - ((columns - 1) * 35);
+      y = (play.playBoundaries.top) + (line * 55);
+      ufosInitial.push(this.object.ufo(
+        x,
+        y,
+        line,
+        column,
+        this.ufo_image
+      ));
+      console.log('line: ' + line + ' column: ' + column + ' x:' + x + ' y:' + y);
     }
-  
+
   }
   this.ufos = ufosInitial;
 
 
 };
 
-InGamePosition.prototype.keyDown = function(play,keyboardCode){
- 
-
+InGamePosition.prototype.keyDown = function (play, keyboardCode) {
+  //mute
+  if (keyboardCode == 's') {
+    play.sounds.toggleMute();
+  }
+  //Pause
+  if (keyboardCode == 'p') {
+    play.pushPosition(new PausePosition());
+  }
 };
 
-InGamePosition.prototype.draw = function(play){
+InGamePosition.prototype.draw = function (play) {
   ctx.clearRect(0, 0, play.width, play.height);
   ctx.drawImage(this.spaceship_image, this.spaceship.x - (this.spaceship.width / 2), this.spaceship.y - (this.spaceship.height / 2));
 
@@ -234,7 +253,7 @@ InGamePosition.prototype.draw = function(play){
   ctx.fillStyle = '#FE2EF7';
   for (let i = 0; i < this.bullets.length; i++) {
     let bullet = this.bullets[i];
-    ctx.fillRect(bullet.x-1, bullet.y -4 , 4, 10);
+    ctx.fillRect(bullet.x - 1, bullet.y - 4, 4, 10);
   }
 
   //enemies
@@ -248,5 +267,34 @@ InGamePosition.prototype.draw = function(play){
   for (let i = 0; i < this.bombs.length; i++) {
     let bomb = this.bombs[i];
     ctx.fillRect(bomb.x - 2, bomb.y, 8, 6);
+  }
+
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+
+  ctx.font = "bold 24px areal";
+  ctx.fillText("Skor", play.playBoundaries.right, play.playBoundaries.top - 35);
+  ctx.font = "bold 30px areal";
+  ctx.fillText(play.score, play.playBoundaries.right, play.playBoundaries.top - 5);
+
+  ctx.font = "bold 24px areal";
+  ctx.fillText("Level", play.playBoundaries.left, play.playBoundaries.top - 35);
+  ctx.font = "bold 30px area";
+  ctx.fillText(play.level, play.playBoundaries.left, play.playBoundaries.top - 5);
+
+  ctx.textAlign = "center";
+  if (play.shields > 0) {
+    ctx.fillStyle = "white";
+    ctx.font = " bold 24px areal";
+    ctx.fillText("Skyldir", play.width / 2, play.playBoundaries.top - 35);
+    ctx.font = "bold 30px areal";
+    ctx.fillText(play.shields, play.width / 2, play.playBoundaries.top - 5);
+  } else {
+    ctx.fillStyle = "white";
+    ctx.font = " bold 24px areal";
+    ctx.fillText("VIÐVÖRUN", play.width / 2, play.playBoundaries.top - 35);
+    ctx.font = "bold 30px areal";
+    ctx.fillText("ENGIR SKYLDIR", play.width / 2, play.playBoundaries.top - 5);
   }
 };

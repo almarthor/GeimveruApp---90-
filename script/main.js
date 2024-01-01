@@ -47,6 +47,8 @@ function GameBasics(canvas) {
 
     bombSpeed: 75,
     bombFrequency: 0.05,
+
+    pointsPerUFO: 25,
   };
 
   // we collect here the different positions, states of the game
@@ -143,6 +145,6 @@ window.addEventListener("keyup", function (e) {
 });
 
 const play = new GameBasics(canvas);
-play.sounds = new Sounds()
+play.sounds = new Sounds();
 play.sounds.init();
 play.start();

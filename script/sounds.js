@@ -1,17 +1,42 @@
-function Sounds(){
-    
+function Sounds() {
+    this.muted = false;
 }
-Sounds.prototype.init = function(){
-this.sound = new Audio();
-this.sound.src = "sounds/shot.mp3";
-this.sound.setAttribute("preload", "auto");
-};
+Sounds.prototype.init = function () {
+    this.soundsSource = ["sounds/shot.mp3", "sounds/ufoDeath.mp3", "sounds/explosion.mp3"];
+    this.allSounds = [];
 
-Sounds.prototype.playSound = function(soundName){
-    if(soundName == 'shot'){
-        this.sound.play();
+    for (let i = 0; i < this.soundsSource.length; i++) {
+        this.allSounds[i] = new Audio();
+        this.allSounds[i].src = this.soundsSource[i];
+        this.allSounds[i].setAttribute("preload", "auto");
     }
 };
-Sounds.prototype.mute = function(){
 
+Sounds.prototype.playSound = function (soundName) {
+
+    if (this.muted == true) {
+        return;
+    }
+
+    let SoundNumber;
+
+    switch (soundName) {
+        case 'shot':
+            SoundNumber = 0;
+            break;
+        case 'ufoDeath':
+            SoundNumber = 1;
+            break;
+        case 'explosion':
+            SoundNumber = 2;
+            break;
+        default:
+            break;
+    }
+    this.allSounds[SoundNumber].play();
+    this.allSounds[SoundNumber].currentTime = 0;
+};
+
+Sounds.prototype.toggleMute = function () {
+    this.muted = !this.muted;
 };
